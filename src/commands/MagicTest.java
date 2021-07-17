@@ -15,7 +15,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import blocks.AttributeForge;
 import data.NSKeys;
+import data.NSKeys.NSKVals;
 
 public class MagicTest implements CommandExecutor {
 
@@ -48,7 +50,7 @@ public class MagicTest implements CommandExecutor {
 				bukkitItemMeta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE,
 						new AttributeModifier(UUID.randomUUID(), "ASpeed", 30, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND));
 				bukkitItemMeta.getPersistentDataContainer().set(
-						NSKeys.getNSKey(NSKeys.Vals.CUSTOM), PersistentDataType.INTEGER, 1);
+						NSKeys.getNSKey(NSKVals.CUSTOM), PersistentDataType.INTEGER, 1);
 				bukkitItem.setItemMeta(bukkitItemMeta);
 				player.getInventory().addItem(bukkitItem);
 			} else if (args[0].equals("findaxe")) {
@@ -66,20 +68,20 @@ public class MagicTest implements CommandExecutor {
 					if (item.getType() == Material.DIAMOND_AXE) {
 						flag = true;
 						if (!item.getItemMeta().getPersistentDataContainer()
-								.has(NSKeys.getNSKey(NSKeys.Vals.CUSTOM), PersistentDataType.INTEGER )) {
+								.has(NSKeys.getNSKey(NSKVals.CUSTOM), PersistentDataType.INTEGER )) {
 							player.sendMessage("§afound dia axe...");
 							continue;
 						}
 						if (item.getItemMeta().getPersistentDataContainer()
-								.get(NSKeys.getNSKey(NSKeys.Vals.CUSTOM), PersistentDataType.INTEGER) == 1) {
+								.get(NSKeys.getNSKey(NSKVals.CUSTOM), PersistentDataType.INTEGER) == 1) {
 							player.sendMessage("§a== mega axe!");
 						}
 						if (item.getItemMeta().getPersistentDataContainer()
-								.get(NSKeys.getNSKey(NSKeys.Vals.CUSTOM), PersistentDataType.INTEGER).equals(1)) {
+								.get(NSKeys.getNSKey(NSKVals.CUSTOM), PersistentDataType.INTEGER).equals(1)) {
 							player.sendMessage("§aequals mega axe!");
 						}
 						if (item.getItemMeta().getPersistentDataContainer()
-								.get(NSKeys.getNSKey(NSKeys.Vals.CUSTOM), PersistentDataType.INTEGER).equals(Integer.valueOf(1))) {
+								.get(NSKeys.getNSKey(NSKVals.CUSTOM), PersistentDataType.INTEGER).equals(Integer.valueOf(1))) {
 							player.sendMessage("§aequals Integer mega axe!");
 						}
 						player.sendMessage("§afound dia axe!");
@@ -92,6 +94,8 @@ public class MagicTest implements CommandExecutor {
 				if (!flag) {
 					player.sendMessage("§afound nothing");
 				}
+			} else if (args[0].equals("af")) {
+				player.getInventory().addItem(AttributeForge.createAttributeForge());
 			} else {
 				player.sendMessage("§atold u not to run this cmd");
 			}

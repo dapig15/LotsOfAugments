@@ -12,6 +12,7 @@ public class Senbonstorm implements CommandExecutor {
 
 	@Override
 	//gj sifting through the documentation
+	// ty
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
     	if(sender instanceof Player) {
       		Player player = (Player)sender;
