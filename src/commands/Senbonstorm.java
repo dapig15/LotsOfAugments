@@ -22,12 +22,15 @@ public class Senbonstorm implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
     		if(sender instanceof Player) {
       			Player player = (Player)sender;
-    		}
-    		Vector playerdir = player.getLocation().getDirection();
-    		int rand = (int)(Math.random()*15) + 7;
-    		for(int i = 0; i < rand; i++) {
-      			player.launchProjectile(Arrow.class,
-      			playerdir).setPickupStatus(PickupStatus.DISALLOWED);
-    		}
+			Vector playerdir = player.getLocation().getDirection();
+    			int rand = (int)(Math.random()*15) + 7;
+    			for(int i = 0; i < rand; i++) {
+      				player.launchProjectile(Arrow.class,
+      				playerdir).setPickupStatus(PickupStatus.DISALLOWED);
+    			}
+    		}else {
+			System.out.print("oh noooooo...anyway");
+			//you are not a player!!!!
+		}
 	}
 }
