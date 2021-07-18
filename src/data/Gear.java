@@ -156,6 +156,12 @@ public class Gear {
 				new AttributeModifier(UUID.randomUUID(), "base_armor", 3, Operation.ADD_NUMBER, EquipmentSlot.FEET),
 				new AttributeModifier(UUID.randomUUID(), "base_armor", 3, Operation.ADD_NUMBER, EquipmentSlot.FEET),
 				new AttributeModifier(UUID.randomUUID(), "base_armor", 0.1, Operation.ADD_NUMBER, EquipmentSlot.FEET)
+		}),
+		ELYTRA (new Attribute[] {}, new AttributeModifier[] {}),
+		WOODEN_SWORD (new Attribute[] {
+				Attribute.GENERIC_ARMOR
+		}, new AttributeModifier[] {
+				new AttributeModifier(UUID.randomUUID(), "base_armor", 1, Operation.ADD_NUMBER, EquipmentSlot.FEET)
 		});
 		
 		// remember attribute[].length == attributemodifier[].length
@@ -201,11 +207,53 @@ public class Gear {
 				m == Material.NETHERITE_BOOTS
 		);
 	}
-	public static int getArmorTier(Material m) {
-		String name = m.name();
-		if (name.contains("LEATHER"))
+	public static boolean isSword(Material m) {
+		return (m==Material.WOODEN_SWORD||m==Material.STONE_SWORD||
+				m==Material.IRON_SWORD||m==Material.GOLDEN_SWORD||
+				m==Material.DIAMOND_SWORD||m==Material.NETHERITE_SWORD);
+	}
+	public static boolean isAxe(Material m) {
+		return (m==Material.WOODEN_AXE||m==Material.STONE_AXE||
+				m==Material.IRON_AXE||m==Material.GOLDEN_AXE||
+				m==Material.DIAMOND_AXE||m==Material.NETHERITE_AXE);
+	}
+	public static boolean isTool(Material m) {
+		return (m==Material.WOODEN_PICKAXE||m==Material.STONE_PICKAXE||
+				m==Material.IRON_PICKAXE||m==Material.GOLDEN_PICKAXE||
+				m==Material.DIAMOND_PICKAXE||m==Material.NETHERITE_PICKAXE||
+				m==Material.WOODEN_SHOVEL||m==Material.STONE_SHOVEL||
+				m==Material.IRON_SHOVEL||m==Material.GOLDEN_SHOVEL||
+				m==Material.DIAMOND_SHOVEL||m==Material.NETHERITE_SHOVEL||
+				m==Material.WOODEN_HOE||m==Material.STONE_HOE||
+				m==Material.IRON_HOE||m==Material.GOLDEN_HOE||
+				m==Material.DIAMOND_HOE||m==Material.NETHERITE_HOE);
+	}
+	public static int getGearType(Material m) {
+		if (isArmor(m))
 			return 0;
-		if (name.contains("CHAINMAIL"))
+		if (m == Material.ELYTRA)
+			return 1;
+		if (isSword(m))
+			return 2;
+		if (isAxe(m))
+			return 3;
+		if (m == Material.TRIDENT)
+			return 4;
+		if (m == Material.BOW)
+			return 5;
+		if (m == Material.CROSSBOW)
+			return 6;
+		if (m == Material.SHIELD)
+			return 7;
+		if (isTool(m))
+			return 8;
+		return -1;
+	}
+	public static int getTier(Material m) {
+		String name = m.name();
+		if (name.contains("LEATHER") || name.contains("WOODEN"))
+			return 0;
+		if (name.contains("CHAINMAIL") || name.contains("STONE"))
 			return 1;
 		if (name.contains("IRON"))
 			return 2;

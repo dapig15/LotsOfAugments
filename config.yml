@@ -1,0 +1,75 @@
+augment-list:
+  - phenomenal
+  - stubborn
+  - steady
+  - stalwart
+  - light
+  - no-guard
+phenomenal:
+  armor:
+    add: 0
+    mult-add: 0
+    mult-mult: 0.5
+  armor-toughness:
+    add: 5
+    mult-add: 0
+    mult-mult: 0
+  attack-damage:
+    add: 0
+    mult-add: 0
+    mult-mult: 0.3
+  attack-speed:
+    add: 0
+    mult-add: 0
+    mult-mult: 0.25
+  knockback-resistance:
+    add: 0
+    mult-add: 0
+    mult-mult: 0.25
+  luck:
+    add: 0
+    mult-add: 0
+    mult-mult: 0.25
+  max-health:
+    add: 0
+    mult-add: 0
+    mult-mult: 1
+  movement-speed:
+    add: 0
+    mult-add: 0
+    mult-mult: 0.2
+  display-name: §d§lPHENOMENAL
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: false
+stubborn:
+  display-name: §a§lSTUBBORN
+  knockback-resistance:
+    add: 1
+  can-apply-to-armor: true
+  can-apply-to-shields: true
+steady:
+  display-name: §a§lSTEADY
+  knockback-resistance:
+    add: 2
+  can-apply-to-armor: true
+  can-apply-to-shields: true
+stalwart:
+  display-name: §a§lSTALWART
+  knockback-resistance:
+    add: 3
+  can-apply-to-armor: true
+  can-apply-to-shields: true
+light:
+  display-name: §a§lLIGHT
+  armor:
+    mult-mult: -0.25
+  movement-speed:
+    mult-mult: 0.25
+  can-apply-to-armor: true

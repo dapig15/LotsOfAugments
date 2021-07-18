@@ -18,8 +18,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import blocks.AttributeArmorKit;
-import blocks.AttributeForge;
+import blocks.UpgradeKit;
+import blocks.AugmentStation;
 import data.NSKeys;
 import data.NSKeys.NSKVals;
 
@@ -101,13 +101,19 @@ public class MagicTest implements CommandExecutor {
 					player.sendMessage("§afound nothing");
 				}
 			} else if (args[0].equals("af")) {
-				player.getInventory().addItem(AttributeForge.createAttributeForge());
+				player.getInventory().addItem(AugmentStation.createAttributeForge());
 			} else if (args[0].equals("openaf")) {
 				Inventory inv = Bukkit.createInventory(
 						player, InventoryType.SMITHING, "§4Attribute Forge");
 				player.openInventory(inv);
 			} else if (args[0].equals("aak")) {
-				player.getInventory().addItem(AttributeArmorKit.createAttributeArmorKit(Integer.parseInt(args[1])));
+				try {
+					int val = Integer.parseInt(args[1]);
+					player.getInventory().addItem(UpgradeKit.createUpgradeKit(val/10, val%10));
+				} catch (Exception e) {
+					e.printStackTrace();
+					player.sendMessage("§adid u type a number");
+				}
 			} else {
 				player.sendMessage("§atold u not to run this cmd");
 			}

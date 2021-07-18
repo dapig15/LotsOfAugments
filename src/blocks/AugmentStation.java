@@ -26,7 +26,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.common.collect.Multimap;
 
@@ -35,42 +34,41 @@ import data.InventoryPair;
 import data.NSKeys;
 import data.NSKeys.NSKVals;
 import main.MagicMonsters;
+import utility.AugmentApplier;
 import utility.Utility;
 
-public class AttributeForge implements Listener {
+public class AugmentStation implements Listener {
 	
 	// TODO REMEMBER THAT MOST OF THESE LISTENERS SHOULD GO INTO THEIR OWN CLASS
 	// TODO IF YOU END UP ADDING MORE BLOCKS LIKE THIS
 	
-	class CheckInventoryTask extends BukkitRunnable {
-		
-		private Inventory inv;
-		public CheckInventoryTask(Inventory inv) {
-			this.inv = inv;
-		}
-		
-		@Override
-		public void run() {
-			ItemStack wool = new ItemStack(Material.GRAY_WOOL);
-			ItemMeta meta = wool.getItemMeta();
-			if (Utility.itemStackExists(inv.getItem(12)) &&
-					Utility.itemStackExists(inv.getItem(14))) {
-				if (Gear.getArmorTier(inv.getItem(12).getType()) ==
-						inv.getItem(14).getItemMeta().getPersistentDataContainer()
-						.get(NSKeys.getNSKey(NSKVals.ATTR_ARMOR_KIT), PersistentDataType.INTEGER) ) {
-					wool.setType(Material.GREEN_WOOL);
-					meta.setDisplayName("§a§lFORGE!");
-				} else {
-					wool.setType(Material.RED_WOOL);
-					meta.setDisplayName("§cGear and kit mismatch...");
-				}
+	private void updateWool(ItemStack gear, ItemStack kit, Inventory inv) {
+		ItemStack wool = new ItemStack(Material.GRAY_WOOL);
+		ItemMeta meta = wool.getItemMeta();
+		if (Utility.itemStackExists(gear) && Utility.itemStackExists(kit)) {
+			int kitData = kit.getItemMeta()
+					.getPersistentDataContainer()
+					.get(NSKeys.getNSKey(NSKVals.UPGRADE_KIT), PersistentDataType.INTEGER);
+			if (Gear.getTier(gear.getType()) == kitData%10 &&
+					Gear.getGearType(gear.getType()) == kitData/10) {
+				wool.setType(Material.GREEN_WOOL);
+				meta.setDisplayName("§a§lFORGE!");
 			} else {
-				meta.setDisplayName("§fPlace gear and upgrade kit!");
+				wool.setType(Material.RED_WOOL);
+				meta.setDisplayName("§cGear and kit mismatch...");
 			}
-			wool.setItemMeta(meta);
-			inv.setItem(16, wool);
+		} else {
+			meta.setDisplayName("§fPlace gear and upgrade kit!");
 		}
-		
+		wool.setItemMeta(meta);
+		inv.setItem(16, wool);
+	}
+	
+	private final MagicMonsters plugin;
+	private final AugmentApplier applier;
+	public AugmentStation(MagicMonsters plugin, AugmentApplier applier) {
+		this.plugin = plugin;
+		this.applier = applier;
 	}
 	
 	public static ItemStack createAttributeForge() {
@@ -150,7 +148,7 @@ public class AttributeForge implements Listener {
 					}
 				}
 				player.openInventory(inv);
-				if (MagicMonsters.getInventoryMap().put(event.getPlayer(),
+				if (plugin.getInventoryMap().put(event.getPlayer(),
 						new InventoryPair(inv, InventoryPair.ATTRIBUTE_FORGE)) == null) {
 					player.sendMessage("new inventory!");
 				} else {
@@ -165,7 +163,7 @@ public class AttributeForge implements Listener {
 		if (event.getWhoClicked() instanceof Player) {
 			Player player = (Player) event.getWhoClicked();
 			player.sendMessage("you clicked in an inv!");
-			HashMap<Player, InventoryPair> hm = MagicMonsters.getInventoryMap();
+			HashMap<Player, InventoryPair> hm = plugin.getInventoryMap();
 			if (hm.get(player) != null && hm.get(player).getInv() == event.getClickedInventory()) {
 				player.sendMessage("you clicked in a stored thingy!");
 				if (hm.get(player).getType() == InventoryPair.ATTRIBUTE_FORGE) {
@@ -175,28 +173,26 @@ public class AttributeForge implements Listener {
 					switch (event.getRawSlot()) {
 					case 12:
 						if (event.getCursor() != null && event.getCursor().getType() != Material.AIR) {
-							if (!Gear.isArmor(event.getCursor().getType())) {
+							if (Gear.getGearType(event.getCursor().getType()) == -1) {
 								event.setCancelled(true);
-								player.sendMessage("§cPlease place armor here!");
+								player.sendMessage("§cPlease place gear here!");
 							} else {
-								player.sendMessage("tier "+Gear.getArmorTier(event.getCursor().getType()));
+								player.sendMessage("tier "+Gear.getTier(event.getCursor().getType()));
 							}
 						}
-						new CheckInventoryTask(event.getInventory())
-							.runTask(Bukkit.getServer().getPluginManager().getPlugin("MagicMonsters"));
+						updateWool(event.getCursor(), event.getInventory().getItem(14), event.getInventory());
 						break;
 					case 14:
 						if (event.getCursor() != null && event.getCursor().getType() != Material.AIR) {
-							if (!NSKeys.hasNSKey(event.getCursor(), NSKVals.ATTR_ARMOR_KIT)) {
+							if (!NSKeys.hasNSKey(event.getCursor(), NSKVals.UPGRADE_KIT)) {
 								event.setCancelled(true);
-								player.sendMessage("§cPlease place an armor kit here!");
+								player.sendMessage("§cPlease place an upgrade kit here!");
 							} else {
 								player.sendMessage("tier "+event.getCursor().getItemMeta().getPersistentDataContainer()
-										.get(NSKeys.getNSKey(NSKVals.ATTR_ARMOR_KIT), PersistentDataType.INTEGER));
+										.get(NSKeys.getNSKey(NSKVals.UPGRADE_KIT), PersistentDataType.INTEGER));
 							}
 						}
-						new CheckInventoryTask(event.getInventory())
-							.runTask(Bukkit.getServer().getPluginManager().getPlugin("MagicMonsters"));
+						updateWool(event.getInventory().getItem(12), event.getCursor(), event.getInventory());
 						break;
 					case 16:
 						if (Utility.itemStackExists(event.getCurrentItem())) {
@@ -215,7 +211,11 @@ public class AttributeForge implements Listener {
 										}
 									}
 								}
-								String attrName = CustomAttribute.addAttributes(meta, Gear.getSlot(gear.getType()));
+								String attrName = applier.addAttributes(meta, gear.getType());
+								if (attrName == null) {
+									event.setCancelled(true);
+									player.sendMessage("There are no valid attributes for this gear!");
+								}
 								if (meta.hasLore()) {
 									List<String> lore = meta.getLore();
 									boolean flag = false;
@@ -246,8 +246,9 @@ public class AttributeForge implements Listener {
 								event.setCancelled(true);
 							} else if (event.getCurrentItem().getType() != Material.GRAY_WOOL &&
 									event.getCurrentItem().getType() != Material.RED_WOOL) {
-								new CheckInventoryTask(event.getInventory())
-									.runTask(Bukkit.getServer().getPluginManager().getPlugin("MagicMonsters"));
+								event.setCancelled(true);
+								event.getWhoClicked().setItemOnCursor(event.getCurrentItem());
+								updateWool(event.getInventory().getItem(12), event.getInventory().getItem(14), event.getInventory());
 							} else {
 								event.setCancelled(true);
 							}
@@ -263,27 +264,26 @@ public class AttributeForge implements Listener {
 			} else if (hm.get(player) != null && hm.get(player).getInv() == event.getInventory() &&
 					event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
 				player.sendMessage("dirty");
-				if (NSKeys.hasNSKey(event.getCurrentItem(), NSKVals.ATTR_ARMOR_KIT)) {
+				if (NSKeys.hasNSKey(event.getCurrentItem(), NSKVals.UPGRADE_KIT)) { // kit
 					ItemStack item = event.getInventory().getItem(14);
 					if (item == null || item.getType() == Material.AIR) {
-						event.getInventory().setItem(14, event.getCurrentItem());
+						ItemStack currentItem = event.getCurrentItem();
 						event.setCurrentItem(null);
-						new CheckInventoryTask(event.getInventory())
-							.runTask(Bukkit.getServer().getPluginManager().getPlugin("MagicMonsters"));
-					} else {
-						event.setCancelled(true);
+						event.getInventory().setItem(14, currentItem);
+						updateWool(event.getInventory().getItem(12), currentItem, event.getInventory());
 					}
-				} else if (Gear.isArmor(event.getCurrentItem().getType())) {
+					event.setCancelled(true);
+				} else if (Gear.getGearType(event.getCurrentItem().getType()) != -1) { // gear
 					ItemStack item = event.getInventory().getItem(12);
 					if (item == null || item.getType() == Material.AIR) {
-						event.getInventory().setItem(12, event.getCurrentItem());
+						ItemStack currentItem = event.getCurrentItem();
 						event.setCurrentItem(null);
-						new CheckInventoryTask(event.getInventory())
-							.runTask(Bukkit.getServer().getPluginManager().getPlugin("MagicMonsters"));
-					} else {
-						event.setCancelled(true);
+						event.getInventory().setItem(12, currentItem);
+						updateWool(currentItem, event.getInventory().getItem(14), event.getInventory());
 					}
+					event.setCancelled(true);
 				} else {
+					player.sendMessage("§cGear or upgrade kits only!");
 					event.setCancelled(true);
 				}
 			}
@@ -297,7 +297,7 @@ public class AttributeForge implements Listener {
 		if (event.getPlayer() instanceof Player) {
 			Player player = (Player) event.getPlayer();
 			player.sendMessage("you closed an inv!");
-			HashMap<Player, InventoryPair> hm = MagicMonsters.getInventoryMap();
+			HashMap<Player, InventoryPair> hm = plugin.getInventoryMap();
 			if (hm.get(player) != null && hm.get(player).getInv() == event.getInventory()) {
 				player.sendMessage("you closed a stored thingy!");
 				
