@@ -1,13 +1,21 @@
 
 package main;
 
+import java.util.HashMap;
+
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import blocks.*;
 import commands.*;
+import data.*;
 
 public class MagicMonsters extends JavaPlugin {
+	
+	// HashMap for players and special inventories (attr forge, etc)
+	private static HashMap<Player, InventoryPair> inventoryMap;
+	
     // Fired when plugin is first enabled
     @Override
     public void onEnable() {
@@ -17,6 +25,8 @@ public class MagicMonsters extends JavaPlugin {
     	
     	PluginManager pm = getServer().getPluginManager();
     	pm.registerEvents(new AttributeForge(), pm.getPlugin("MagicMonsters")); // get name from yml
+    	
+    	inventoryMap = new HashMap<>();
     }
     
     // Fired when plugin is disabled
@@ -24,4 +34,8 @@ public class MagicMonsters extends JavaPlugin {
     public void onDisable() {
 
     }
+
+	public static HashMap<Player, InventoryPair> getInventoryMap() {
+		return inventoryMap;
+	}
 }

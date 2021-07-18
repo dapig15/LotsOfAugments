@@ -3,6 +3,7 @@ package commands;
 import java.util.Arrays;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -10,11 +11,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import blocks.AttributeArmorKit;
 import blocks.AttributeForge;
 import data.NSKeys;
 import data.NSKeys.NSKVals;
@@ -32,6 +36,8 @@ public class MagicTest implements CommandExecutor {
 				bukkitItemMeta.setLore(Arrays.asList("§aA very strong sword"));
 				bukkitItemMeta.addAttributeModifier(Attribute.GENERIC_MOVEMENT_SPEED,
 						new AttributeModifier(UUID.randomUUID(), "Speed", 0.02, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND));
+				bukkitItemMeta.addAttributeModifier(Attribute.GENERIC_MOVEMENT_SPEED,
+						new AttributeModifier(UUID.randomUUID(), "Speed", 0.02, AttributeModifier.Operation.ADD_SCALAR, EquipmentSlot.HAND));
 				bukkitItemMeta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED,
 						new AttributeModifier(UUID.randomUUID(), "ASpeed", 1.6, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND));
 				bukkitItemMeta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE,
@@ -96,6 +102,12 @@ public class MagicTest implements CommandExecutor {
 				}
 			} else if (args[0].equals("af")) {
 				player.getInventory().addItem(AttributeForge.createAttributeForge());
+			} else if (args[0].equals("openaf")) {
+				Inventory inv = Bukkit.createInventory(
+						player, InventoryType.SMITHING, "§4Attribute Forge");
+				player.openInventory(inv);
+			} else if (args[0].equals("aak")) {
+				player.getInventory().addItem(AttributeArmorKit.createAttributeArmorKit(Integer.parseInt(args[1])));
 			} else {
 				player.sendMessage("§atold u not to run this cmd");
 			}

@@ -11,7 +11,8 @@ public class NSKeys {
 	public enum NSKVals {
 		CUSTOM,
 		FISHING,
-		ATTRIBUTE_FORGE
+		ATTRIBUTE_FORGE,
+		ATTR_ARMOR_KIT
 	}
 	public static NamespacedKey getNSKey(NSKVals v) {
 		switch (v) {
@@ -27,6 +28,10 @@ public class NSKeys {
 			return new NamespacedKey(
 					Bukkit.getServer().getPluginManager().getPlugin("MagicMonsters"),
 					"reforge_anvil");
+		case ATTR_ARMOR_KIT:
+			return new NamespacedKey(
+					Bukkit.getServer().getPluginManager().getPlugin("MagicMonsters"),
+					"attr_armor_kit");
 		default:
 			System.out.println("uh oh");
 			return new NamespacedKey(
@@ -41,6 +46,8 @@ public class NSKeys {
 		case FISHING:
 			return PersistentDataType.INTEGER;
 		case ATTRIBUTE_FORGE:
+			return PersistentDataType.INTEGER;
+		case ATTR_ARMOR_KIT:
 			return PersistentDataType.INTEGER;
 		default:
 			System.out.println("uh oh");
