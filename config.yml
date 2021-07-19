@@ -1,53 +1,55 @@
 #all augments are formatted in a specific way:
 #<name (id) of augment>: ("phenomenal", etc.; DO NOT MAKE TWO THAT HAVE THE SAME NAME!)
+#  display-name: <name> (supports minecraft color codes; two can have the same display name but NOT THE SAME ID)
+#  weight: 1 (higher weight = higher chance to get that trait; defaults to 1)
 #  armor/armor-toughness/attack-damage/attack-speed/knockback-resistance/luck-max-health/movement-speed: (you can add whatever of these attributes you want, but dont add the same attr twice; all zero/non-number values are ignored)
 #    add: 0 (boosts stat by val; additive)
 #    mult-add: 0 (boosts stat by 1+val; multiplicative, stacks additively with other mult-add)
 #    mult-mult: 0 (boosts stat by 1+val; multiplicative, stacks multiplicatively with other mult-mult)
-#  display-name: <name> (supports minecraft color codes; two can have the same display name but NOT THE SAME ID)
 #  can-apply-to-armor/elytras/swords/axes/tridents/bows/crossbows/shields/tools: true/false (if it cant be applied, that gear wont get that trait)
 # below are some examples!
-augment-list:
-  - phenomenal
+augment-list: #anything not in this list wont be included!
+  - weak
   - stubborn
-  - stalwart
-  - sharp
-  - unwieldy
-  - swift
-phenomenal:
+  - stout
+  - stable
+  - steadfast
+  - stoic
+example:
+  display-name: §d§lEXAMPLE
+  weight: 1
   armor:
     add: 0
     mult-add: 0
-    mult-mult: 0.5
+    mult-mult: 0
   armor-toughness:
-    add: 5
+    add: 0
     mult-add: 0
     mult-mult: 0
   attack-damage:
     add: 0
     mult-add: 0
-    mult-mult: 0.3
+    mult-mult: 0
   attack-speed:
     add: 0
     mult-add: 0
-    mult-mult: 0.25
+    mult-mult: 0
   knockback-resistance:
     add: 0
     mult-add: 0
-    mult-mult: 0.25
+    mult-mult: 0
   luck:
     add: 0
     mult-add: 0
-    mult-mult: 0.25
+    mult-mult: 0
   max-health:
     add: 0
     mult-add: 0
-    mult-mult: 1
+    mult-mult: 0
   movement-speed:
     add: 0
     mult-add: 0
-    mult-mult: 0.2
-  display-name: §d§lPHENOMENAL
+    mult-mult: 0
   can-apply-to-armor: true
   can-apply-to-elytras: true
   can-apply-to-swords: true
@@ -57,41 +59,51 @@ phenomenal:
   can-apply-to-crossbows: true
   can-apply-to-shields: true
   can-apply-to-tools: true
+weak:
+  display-name: §7§lWEAK
+  weight: 15
+  knockback-resistance:
+    mult-add: -0.1
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true
 stubborn:
-  display-name: §a§lSTUBBORN
+  display-name: §f§lSTUBBORN
+  weight: 35
   knockback-resistance:
-    add: 0.1
+    add: 1
   can-apply-to-armor: true
+  can-apply-to-elytras: true
   can-apply-to-shields: true
-  weight: 20
-stalwart:
-  display-name: §a§lSTALWART
+stout:
+  display-name: §7§lSTOUT
+  weight: 25
   knockback-resistance:
-    add: 0.3
+    add: 2
   can-apply-to-armor: true
+  can-apply-to-elytras: true
   can-apply-to-shields: true
-  weight: 5
-sharp:
-  display-name: §a§lSHARP
-  attack-damage:
-    mult-mult: 0.05
-  can-apply-to-swords: true
-  can-apply-to-axes: true
-  can-apply-to-tridents: true
-  weight: 20
-unwieldy:
-  display-name: §a§lUNWIELDY
-  attack-speed:
-    mult-mult: -0.5
-  can-apply-to-swords: true
-  can-apply-to-axes: true
-  can-apply-to-tridents: true
-  weight: 20
-swift:
-  display-name: §a§lSWIFT
-  attack-speed:
-    mult-mult: 0.5
-  can-apply-to-swords: true
-  can-apply-to-axes: true
-  can-apply-to-tridents: true
-  weight: 20
+stable:
+  display-name: §9§lSTABLE
+  weight: 15
+  knockback-resistance:
+    add: 3
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true
+steadfast:
+  display-name: §5§lSTEADFAST
+  weight: 8
+  knockback-resistance:
+    add: 4
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true
+stoic:
+  display-name: §6§lSTOIC
+  weight: 2
+  knockback-resistance:
+    add: 5
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true

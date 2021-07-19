@@ -203,16 +203,16 @@ public class AugmentStation implements Listener {
 									List<String> lore = meta.getLore();
 									boolean flag = false;
 									for (int i = 0; i < lore.size(); i++) {
-										if (lore.get(i).contains("§fAttribute: ")) {
+										if (lore.get(i).contains("§fTrait: ")) {
 											flag = true;
-											lore.set(i, "§fAttribute: "+attrName);
+											lore.set(i, "§fTrait: "+attrName);
 										}
 									}
 									if (!flag)
 										lore.add("§fAttribute: "+attrName);
 									meta.setLore(lore);
 								} else {
-									meta.setLore(Arrays.asList(new String[] {"§fAttribute: "+attrName}));
+									meta.setLore(Arrays.asList(new String[] {"§fTrait: "+attrName}));
 								}
 								gear.setItemMeta(meta);
 								
