@@ -123,7 +123,7 @@ public class MagicMonsters extends JavaPlugin {
 				continue outer;
 			}
 			final String name = config.getString(augmentId+".display-name");
-			final boolean[] canApply = new boolean[8];
+			final boolean[] canApply = new boolean[9];
 			for (int j = 0; j < canApply.length; j++) {
 				if (!config.contains(augmentId+"."+fieldStrings[j]) || !config.isBoolean(augmentId+"."+fieldStrings[j])) {
 					this.getLogger().info(augmentId + " has invalid "+augmentId+"."+fieldStrings[j]+"!");
@@ -131,8 +131,14 @@ public class MagicMonsters extends JavaPlugin {
 					canApply[j] = config.getBoolean(augmentId+"."+fieldStrings[j]);
 				}
 			}
-			
-			validAugments.add(new Augment(map, name, canApply));
+			int weight = 1;
+			if (!config.contains(augmentId+".weight") || !config.isInt(augmentId+".weight") ||
+					config.getInt(augmentId+".weight") < 1) {
+				this.getLogger().info(augmentId + " has invalid "+augmentId+".weight!");
+			} else {
+				weight = config.getInt(augmentId+".weight");
+			}
+			validAugments.add(new Augment(map, name, canApply, weight, i));
 		}
     	this.getLogger().info("we got "+validAugments.size()+" augs");
     	for (int i = 0; i < validAugments.size(); i++) {

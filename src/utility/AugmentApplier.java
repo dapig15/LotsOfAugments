@@ -10,8 +10,11 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import data.Gear;
+import data.NSKeys;
+import data.NSKeys.NSKVals;
 import main.MagicMonsters;
 
 public class AugmentApplier {
@@ -35,6 +38,36 @@ public class AugmentApplier {
 		ArrayList<Augment> augs = plugin.getValidAugments(Gear.getGearType(m));
 		if (augs.isEmpty())
 			return null;
-		return addAttributes(meta, augs.get(rand.nextInt(augs.size())), Gear.getSlot(m));
+		if (augs.size() == 1)
+			return addAttributes(meta, augs.get(0), Gear.getSlot(m));
+		int totalWeight = 0;
+		int existingId = -1, toDeleteInd = -1;
+		if (meta.getPersistentDataContainer().has(NSKeys.getNSKey(NSKVals.AUGMENT_NAME),
+				PersistentDataType.INTEGER)) {
+			existingId = meta.getPersistentDataContainer().get(NSKeys.getNSKey(NSKVals.AUGMENT_NAME),
+				PersistentDataType.INTEGER);
+		}
+		for (int i = 0; i < augs.size(); i++) {
+			if (augs.get(i).getId() == existingId) {
+				toDeleteInd = i;
+			} else {
+				totalWeight += augs.get(i).getWeight();
+			}
+		}
+		if (toDeleteInd != -1)
+			augs.remove(toDeleteInd);
+		int random = rand.nextInt(totalWeight);
+		int counter = 0;
+		Augment chosenAug = augs.get(0);
+		for (Augment aug : augs) {
+			counter += aug.getWeight();
+			if (random < counter) {
+				chosenAug = aug;
+				break;
+			}
+		}
+		meta.getPersistentDataContainer().set(NSKeys.getNSKey(NSKVals.AUGMENT_NAME),
+				PersistentDataType.INTEGER, chosenAug.getId());
+		return addAttributes(meta, chosenAug, Gear.getSlot(m));
 	}
 }

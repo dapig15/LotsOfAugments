@@ -42,28 +42,6 @@ public class AugmentStation implements Listener {
 	// TODO REMEMBER THAT MOST OF THESE LISTENERS SHOULD GO INTO THEIR OWN CLASS
 	// TODO IF YOU END UP ADDING MORE BLOCKS LIKE THIS
 	
-	private void updateWool(ItemStack gear, ItemStack kit, Inventory inv) {
-		ItemStack wool = new ItemStack(Material.GRAY_WOOL);
-		ItemMeta meta = wool.getItemMeta();
-		if (Utility.itemStackExists(gear) && Utility.itemStackExists(kit)) {
-			int kitData = kit.getItemMeta()
-					.getPersistentDataContainer()
-					.get(NSKeys.getNSKey(NSKVals.UPGRADE_KIT), PersistentDataType.INTEGER);
-			if (Gear.getTier(gear.getType()) == kitData%10 &&
-					Gear.getGearType(gear.getType()) == kitData/10) {
-				wool.setType(Material.GREEN_WOOL);
-				meta.setDisplayName("§a§lFORGE!");
-			} else {
-				wool.setType(Material.RED_WOOL);
-				meta.setDisplayName("§cGear and kit mismatch...");
-			}
-		} else {
-			meta.setDisplayName("§fPlace gear and upgrade kit!");
-		}
-		wool.setItemMeta(meta);
-		inv.setItem(16, wool);
-	}
-	
 	private final MagicMonsters plugin;
 	private final AugmentApplier applier;
 	public AugmentStation(MagicMonsters plugin, AugmentApplier applier) {
@@ -106,7 +84,6 @@ public class AugmentStation implements Listener {
 	public void onReforgeAnvilMine(BlockBreakEvent event) {
 		Player player = event.getPlayer();
 		if (isAttributeForge(event.getBlock())) {
-			player.sendMessage("attribute forge broken!");
 			event.setDropItems(false);
 			player.getWorld().dropItemNaturally(event.getBlock().getLocation(),
 					createAttributeForge());
@@ -117,9 +94,6 @@ public class AugmentStation implements Listener {
 	public void onUseReforgeAnvil(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		Block clickedBlock = event.getClickedBlock();
-		if (clickedBlock != null)
-			player.sendMessage("you clicked on a "+clickedBlock.getType().name());
-		player.sendMessage("did u click a block? "+(event.getAction() == Action.RIGHT_CLICK_BLOCK));
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if (isAttributeForge(clickedBlock)) {
 				event.setCancelled(true);
@@ -138,22 +112,18 @@ public class AugmentStation implements Listener {
 						instructions.setItemMeta(meta);
 						inv.setItem(10, instructions);
 					} else if (i == 16) {
-						ItemStack instructions = new ItemStack(Material.GRAY_WOOL);
-						ItemMeta meta = instructions.getItemMeta();
-						meta.setDisplayName("§fPlace gear and upgrade kit!");
-						instructions.setItemMeta(meta);
-						inv.setItem(16, instructions);
+						ItemStack forgeGlass = new ItemStack(Material.LIME_STAINED_GLASS);
+						ItemMeta meta = forgeGlass.getItemMeta();
+						meta.setDisplayName("§a§lFORGE!");
+						forgeGlass.setItemMeta(meta);
+						inv.setItem(16, forgeGlass);
 					} else if (i != 12 && i != 14) {
 						inv.setItem(i, new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
 					}
 				}
 				player.openInventory(inv);
-				if (plugin.getInventoryMap().put(event.getPlayer(),
-						new InventoryPair(inv, InventoryPair.ATTRIBUTE_FORGE)) == null) {
-					player.sendMessage("new inventory!");
-				} else {
-					player.sendMessage("already had one??");
-				}
+				plugin.getInventoryMap().put(event.getPlayer(),
+						new InventoryPair(inv, InventoryPair.ATTRIBUTE_FORGE));
 			}
 		}
 	}
@@ -162,43 +132,55 @@ public class AugmentStation implements Listener {
 	public void onReforgeAnvilInventoryClick(InventoryClickEvent event) {
 		if (event.getWhoClicked() instanceof Player) {
 			Player player = (Player) event.getWhoClicked();
-			player.sendMessage("you clicked in an inv!");
 			HashMap<Player, InventoryPair> hm = plugin.getInventoryMap();
 			if (hm.get(player) != null && hm.get(player).getInv() == event.getClickedInventory()) {
-				player.sendMessage("you clicked in a stored thingy!");
 				if (hm.get(player).getType() == InventoryPair.ATTRIBUTE_FORGE) {
-					player.sendMessage("you clicked in an attr forge inv!");
-					player.sendMessage("clicked slot: "+event.getSlot());
-					player.sendMessage("clicked rawslot: "+event.getRawSlot());
+					if (event.getAction() == InventoryAction.COLLECT_TO_CURSOR) {
+						ItemStack forgeGlass = new ItemStack(Material.LIME_STAINED_GLASS);
+						ItemMeta meta = forgeGlass.getItemMeta();
+						meta.setDisplayName("§a§lFORGE!");
+						forgeGlass.setItemMeta(meta);
+						if (event.getCursor().isSimilar(forgeGlass)) {
+							event.setCancelled(true);
+							return;
+						}
+					}
 					switch (event.getRawSlot()) {
 					case 12:
 						if (event.getCursor() != null && event.getCursor().getType() != Material.AIR) {
 							if (Gear.getGearType(event.getCursor().getType()) == -1) {
 								event.setCancelled(true);
 								player.sendMessage("§cPlease place gear here!");
-							} else {
-								player.sendMessage("tier "+Gear.getTier(event.getCursor().getType()));
 							}
 						}
-						updateWool(event.getCursor(), event.getInventory().getItem(14), event.getInventory());
 						break;
 					case 14:
 						if (event.getCursor() != null && event.getCursor().getType() != Material.AIR) {
 							if (!NSKeys.hasNSKey(event.getCursor(), NSKVals.UPGRADE_KIT)) {
 								event.setCancelled(true);
 								player.sendMessage("§cPlease place an upgrade kit here!");
-							} else {
-								player.sendMessage("tier "+event.getCursor().getItemMeta().getPersistentDataContainer()
-										.get(NSKeys.getNSKey(NSKVals.UPGRADE_KIT), PersistentDataType.INTEGER));
 							}
 						}
-						updateWool(event.getInventory().getItem(12), event.getCursor(), event.getInventory());
 						break;
 					case 16:
 						if (Utility.itemStackExists(event.getCurrentItem())) {
-							if (event.getCurrentItem().getType() == Material.GREEN_WOOL) {
-								player.sendMessage("valid");
-								ItemStack gear = event.getInventory().getItem(12);
+							if (event.getCurrentItem().getType() == Material.LIME_STAINED_GLASS) {
+								ItemStack gear = event.getInventory().getItem(12),
+										kit = event.getInventory().getItem(14);
+								if (!Utility.itemStackExists(gear) || !Utility.itemStackExists(kit)) {
+									player.sendMessage("§cPlace gear and an upgrade kit!");
+									event.setCancelled(true);
+									return;
+								}
+								int kitData = kit.getItemMeta()
+										.getPersistentDataContainer()
+										.get(NSKeys.getNSKey(NSKVals.UPGRADE_KIT), PersistentDataType.INTEGER);
+								if (Gear.getTier(gear.getType()) != kitData%10 ||
+										Gear.getGearType(gear.getType()) != kitData/10) {
+									player.sendMessage("§cGear and kit mismatch...");
+									event.setCancelled(true);
+									return;
+								}
 								ItemMeta meta = gear.getItemMeta();
 								if (meta.getAttributeModifiers() == null || meta.getAttributeModifiers().isEmpty()) {
 									meta.setAttributeModifiers(Gear.GearStats.valueOf(gear.getType().name()).getMap());
@@ -206,7 +188,7 @@ public class AugmentStation implements Listener {
 									Multimap<Attribute, AttributeModifier> multimap = meta.getAttributeModifiers();
 									meta.setAttributeModifiers(null);
 									for (Entry<Attribute, AttributeModifier> e : multimap.entries()) {
-										if (!e.getValue().getName().equals("custom_attribute")) {
+										if (!e.getValue().getName().equals("augment")) {
 											meta.addAttributeModifier(e.getKey(), e.getValue());
 										}
 									}
@@ -214,7 +196,8 @@ public class AugmentStation implements Listener {
 								String attrName = applier.addAttributes(meta, gear.getType());
 								if (attrName == null) {
 									event.setCancelled(true);
-									player.sendMessage("There are no valid attributes for this gear!");
+									player.sendMessage("§c§lThere are no valid attributes for this gear!");
+									return;
 								}
 								if (meta.hasLore()) {
 									List<String> lore = meta.getLore();
@@ -244,15 +227,17 @@ public class AugmentStation implements Listener {
 									event.getInventory().getItem(14).setAmount(event.getInventory().getItem(14).getAmount()-1);
 								event.getInventory().setItem(16, gear);
 								event.setCancelled(true);
-							} else if (event.getCurrentItem().getType() != Material.GRAY_WOOL &&
-									event.getCurrentItem().getType() != Material.RED_WOOL) {
-								event.setCancelled(true);
-								event.getWhoClicked().setItemOnCursor(event.getCurrentItem());
-								updateWool(event.getInventory().getItem(12), event.getInventory().getItem(14), event.getInventory());
 							} else {
 								event.setCancelled(true);
+								event.getWhoClicked().setItemOnCursor(event.getCurrentItem());
+								ItemStack forgeGlass = new ItemStack(Material.LIME_STAINED_GLASS);
+								ItemMeta meta = forgeGlass.getItemMeta();
+								meta.setDisplayName("§a§lFORGE!");
+								forgeGlass.setItemMeta(meta);
+								event.getInventory().setItem(16, forgeGlass);
 							}
 						} else {
+							player.sendMessage("how");
 							event.setCancelled(true);
 						}
 						break;
@@ -263,14 +248,12 @@ public class AugmentStation implements Listener {
 				}
 			} else if (hm.get(player) != null && hm.get(player).getInv() == event.getInventory() &&
 					event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-				player.sendMessage("dirty");
 				if (NSKeys.hasNSKey(event.getCurrentItem(), NSKVals.UPGRADE_KIT)) { // kit
 					ItemStack item = event.getInventory().getItem(14);
 					if (item == null || item.getType() == Material.AIR) {
 						ItemStack currentItem = event.getCurrentItem();
 						event.setCurrentItem(null);
 						event.getInventory().setItem(14, currentItem);
-						updateWool(event.getInventory().getItem(12), currentItem, event.getInventory());
 					}
 					event.setCancelled(true);
 				} else if (Gear.getGearType(event.getCurrentItem().getType()) != -1) { // gear
@@ -279,7 +262,6 @@ public class AugmentStation implements Listener {
 						ItemStack currentItem = event.getCurrentItem();
 						event.setCurrentItem(null);
 						event.getInventory().setItem(12, currentItem);
-						updateWool(currentItem, event.getInventory().getItem(14), event.getInventory());
 					}
 					event.setCancelled(true);
 				} else {
@@ -296,11 +278,8 @@ public class AugmentStation implements Listener {
 	public void onReforgeAnvilInventoryClose(InventoryCloseEvent event) {
 		if (event.getPlayer() instanceof Player) {
 			Player player = (Player) event.getPlayer();
-			player.sendMessage("you closed an inv!");
 			HashMap<Player, InventoryPair> hm = plugin.getInventoryMap();
 			if (hm.get(player) != null && hm.get(player).getInv() == event.getInventory()) {
-				player.sendMessage("you closed a stored thingy!");
-				
 				if (hm.get(player).getType() == InventoryPair.ATTRIBUTE_FORGE) {
 					if (Utility.itemStackExists(event.getInventory().getItem(12))) {
 						player.getWorld().dropItemNaturally(player.getLocation(), event.getInventory().getItem(12));
