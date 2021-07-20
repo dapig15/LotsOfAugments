@@ -78,6 +78,7 @@ public class MagicMonsters extends JavaPlugin {
 	};
 	
 	private ArrayList<Augment> validAugments;
+	private HashMap<String, Augment> validAugmentMap;
 	public ArrayList<Augment> getValidAugments() {
 		return validAugments;
 	}
@@ -89,6 +90,9 @@ public class MagicMonsters extends JavaPlugin {
 		}
 		return res;
 	}
+	public Augment getValidAugment(String str) {
+		return validAugmentMap.containsKey(str) ? validAugmentMap.get(str) : null;
+	}
 	
     // Fired when plugin is first enabled
     @Override
@@ -97,12 +101,13 @@ public class MagicMonsters extends JavaPlugin {
     	this.getCommand("warmode").setExecutor(new Warmode());
     	this.getCommand("magictest").setExecutor(new MagicTest());
     	this.getCommand("senbonstorm").setExecutor(new Senbonstorm());
-    	this.getCommand("augmentlist").setExecutor(new AugmentList(this));
+    	AugmentList augList = new AugmentList(this);
+    	this.getCommand("augmentlist").setExecutor(augList);
     	
     	PluginManager pm = getServer().getPluginManager();
     	AugmentApplier applier = new AugmentApplier(this);
     	pm.registerEvents(new AugmentStation(this, applier), pm.getPlugin("MagicMonsters")); // get name from yml
-    	pm.registerEvents(new AugmentList(this), pm.getPlugin("MagicMonsters"));
+    	pm.registerEvents(augList, pm.getPlugin("MagicMonsters"));
     	
     	// make blank upgrade kit recipe
     	NamespacedKey blankKitKey = new NamespacedKey(this, "blank_kit_recipe");
@@ -143,9 +148,9 @@ public class MagicMonsters extends JavaPlugin {
     	config = this.getConfig();
     	List<String> augmentStrs = config.getStringList("augment-list");
     	validAugments = new ArrayList<>();
+    	validAugmentMap = new HashMap<String, Augment>();
     	outer: for (int i = 0; i < augmentStrs.size(); i++) {
     		String augmentId = augmentStrs.get(i);
-    		this.getLogger().info("found augment "+augmentId);
     		
     		Builder<Attribute, ModifierPair> builder = ImmutableMultimap.builder();
 			for (int j = 0; j < attrStrings.length; j++) {
@@ -153,9 +158,7 @@ public class MagicMonsters extends JavaPlugin {
 				for (int k = 0; k < operationStrings.length; k++) {
 					String oper = operationStrings[k];
 					String path = augmentId+"."+attr+"."+oper;
-					if (!config.contains(path) || (!config.isDouble(path) && !config.isInt(path))) {
-						this.getLogger().info(augmentId + " has invalid "+path+"!");
-					} else {
+					if (!(!config.contains(path) || (!config.isDouble(path) && !config.isInt(path)))) {
 						if (config.getDouble(path) != 0) {
 							builder.put(attrVals[j], new ModifierPair(config.getDouble(path), operationVals[k]));
 						}
@@ -174,24 +177,18 @@ public class MagicMonsters extends JavaPlugin {
 			}
 			final boolean[] canApply = new boolean[9];
 			for (int j = 0; j < canApply.length; j++) {
-				if (!config.contains(augmentId+"."+fieldStrings[j]) || !config.isBoolean(augmentId+"."+fieldStrings[j])) {
-					this.getLogger().info(augmentId + " has invalid "+augmentId+"."+fieldStrings[j]+"!");
-				} else {
+				if (!(!config.contains(augmentId+"."+fieldStrings[j]) || !config.isBoolean(augmentId+"."+fieldStrings[j]))) {
 					canApply[j] = config.getBoolean(augmentId+"."+fieldStrings[j]);
 				}
 			}
 			int weight = 1;
-			if (!config.contains(augmentId+".weight") || !config.isInt(augmentId+".weight") ||
-					config.getInt(augmentId+".weight") < 1) {
-				this.getLogger().info(augmentId + " has invalid "+augmentId+".weight!");
-			} else {
+			if (!(!config.contains(augmentId+".weight") || !config.isInt(augmentId+".weight") ||
+					config.getInt(augmentId+".weight") < 1)) {
 				weight = config.getInt(augmentId+".weight");
 			}
-			validAugments.add(new Augment(map, name, desc, canApply, weight, i));
-		}
-    	this.getLogger().info("we got "+validAugments.size()+" augs");
-    	for (int i = 0; i < validAugments.size(); i++) {
-			this.getLogger().info("including "+validAugments.get(i).getName());
+			Augment madeAug = new Augment(map, augmentId, name, desc, canApply, weight);
+			validAugments.add(madeAug);
+			validAugmentMap.put(augmentId, madeAug);
 		}
     }
     

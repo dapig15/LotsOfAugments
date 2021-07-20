@@ -3,13 +3,9 @@ package blocks;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.BlastFurnace;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -26,8 +22,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-
-import com.google.common.collect.Multimap;
 
 import data.Gear;
 import data.InventoryPair;
@@ -182,52 +176,12 @@ public class AugmentStation implements Listener {
 									event.setCancelled(true);
 									return;
 								}
-								ItemMeta meta = gear.getItemMeta();
-								if (meta.getAttributeModifiers() == null || meta.getAttributeModifiers().isEmpty()) {
-									meta.setAttributeModifiers(Gear.GearStats.valueOf(gear.getType().name()).getMap());
-								} else {
-									Multimap<Attribute, AttributeModifier> multimap = meta.getAttributeModifiers();
-									meta.setAttributeModifiers(null);
-									for (Entry<Attribute, AttributeModifier> e : multimap.entries()) {
-										if (!e.getValue().getName().equals("augment")) {
-											meta.addAttributeModifier(e.getKey(), e.getValue());
-										}
-									}
-								}
-								Augment aug = applier.addAttributes(meta, gear.getType());
+								Augment aug = applier.addAttributes(gear);
 								if (aug == null) {
 									event.setCancelled(true);
 									player.sendMessage("§c§lThere are no valid attributes for this gear!");
 									return;
 								}
-								String attrName = aug.getName();
-								if (meta.hasLore()) {
-									List<String> lore = meta.getLore();
-									boolean flag = false;
-									for (int i = 0; i < lore.size(); i++) {
-										if (lore.get(i).contains("§fTrait: ")) {
-											flag = true;
-											lore.set(i, "§fTrait: "+attrName);
-											if (i+1 < lore.size()) {
-												lore.set(i+1, aug.getDesc());
-											} else {
-												lore.add(aug.getDesc());
-											}
-											break;
-										}
-									}
-									if (!flag) {
-										lore.add("§fTrait: "+attrName);
-										lore.add(aug.getDesc());
-									}
-									meta.setLore(lore);
-								} else {
-									meta.setLore(Arrays.asList(new String[] {
-											"§fTrait: "+attrName,
-											aug.getDesc()
-									}));
-								}
-								gear.setItemMeta(meta);
 								
 								if (event.getInventory().getItem(12).getAmount() == 1)
 									event.getInventory().setItem(12, null);
@@ -260,7 +214,8 @@ public class AugmentStation implements Listener {
 					}
 				}
 			} else if (hm.get(player) != null && hm.get(player).getInv() == event.getInventory() &&
-					event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+					event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY &&
+					hm.get(player).getType() == InventoryPair.ATTRIBUTE_FORGE) {
 				if (NSKeys.hasNSKey(event.getCurrentItem(), NSKVals.UPGRADE_KIT)) { // kit
 					ItemStack item = event.getInventory().getItem(14);
 					if (item == null || item.getType() == Material.AIR) {
@@ -281,6 +236,8 @@ public class AugmentStation implements Listener {
 					player.sendMessage("§cGear or upgrade kits only!");
 					event.setCancelled(true);
 				}
+			} else {
+				System.out.println("not this one");
 			}
 		} else {
 			System.out.println("but how");

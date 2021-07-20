@@ -13,7 +13,8 @@ public class NSKeys {
 		FISHING,
 		ATTRIBUTE_FORGE,
 		UPGRADE_KIT,
-		AUGMENT_NAME
+		AUGMENT_ID,
+		AUGMENT_PAPER_ID
 	}
 	public static NamespacedKey getNSKey(NSKVals v) {
 		switch (v) {
@@ -33,10 +34,14 @@ public class NSKeys {
 			return new NamespacedKey(
 					Bukkit.getServer().getPluginManager().getPlugin("MagicMonsters"),
 					"attr_armor_kit");
-		case AUGMENT_NAME:
+		case AUGMENT_ID:
 			return new NamespacedKey(
 					Bukkit.getServer().getPluginManager().getPlugin("MagicMonsters"),
-					"augment_name");
+					"augment_id");
+		case AUGMENT_PAPER_ID:
+			return new NamespacedKey(
+					Bukkit.getServer().getPluginManager().getPlugin("MagicMonsters"),
+					"augment_paper_id");
 		default:
 			System.out.println("uh oh");
 			return new NamespacedKey(
@@ -46,8 +51,10 @@ public class NSKeys {
 	}
 	public static PersistentDataType<?, ?> getNSDataType(NSKVals v) {
 		switch (v) {
-		case CUSTOM: case FISHING: case ATTRIBUTE_FORGE: case UPGRADE_KIT: case AUGMENT_NAME:
+		case CUSTOM: case FISHING: case ATTRIBUTE_FORGE: case UPGRADE_KIT:
 			return PersistentDataType.INTEGER;
+		case AUGMENT_ID: case AUGMENT_PAPER_ID:
+			return PersistentDataType.STRING;
 		default:
 			System.out.println("uh oh");
 			return PersistentDataType.INTEGER;

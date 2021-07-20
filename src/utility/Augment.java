@@ -6,17 +6,17 @@ import com.google.common.collect.ImmutableMultimap;
 
 public class Augment {
 	private final ImmutableMultimap<Attribute, ModifierPair> attrMap;
-	private final String name, desc;
+	private final String id, name, desc;
 	private final boolean[] applyArr;
-	private final int weight, id;
-	public Augment(ImmutableMultimap<Attribute, ModifierPair> attrMap, String name, String desc, boolean[] applyArr, int weight, int id) {
+	private final int weight;
+	public Augment(ImmutableMultimap<Attribute, ModifierPair> attrMap, String id, String name, String desc, boolean[] applyArr, int weight) {
 		super();
 		this.attrMap = attrMap;
+		this.id = id;
 		this.name = name;
 		this.desc = desc;
 		this.applyArr = applyArr;
 		this.weight = weight;
-		this.id = id;
 	}
 	public ImmutableMultimap<Attribute, ModifierPair> getAttrMap() {
 		return attrMap;
@@ -33,7 +33,7 @@ public class Augment {
 	public int getWeight() {
 		return weight;
 	}
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 }
