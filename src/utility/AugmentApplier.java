@@ -25,16 +25,16 @@ public class AugmentApplier {
 	}
 	
 	// CONFIRM THAT META IS ACTUALLY GEAR!
-	public String addAttributes(ItemMeta meta, Augment aug, EquipmentSlot slot) {
+	public Augment addAttributes(ItemMeta meta, Augment aug, EquipmentSlot slot) {
 		for (Entry<Attribute, ModifierPair> entry : aug.getAttrMap().entries()) {
 			if (entry.getValue().getVal() == 0) continue;
 			meta.addAttributeModifier(entry.getKey(),
 					new AttributeModifier(UUID.randomUUID(), "augment",
 							entry.getValue().getVal(), entry.getValue().getOper(), slot));
 		}
-		return aug.getName();
+		return aug;
 	}
-	public String addAttributes(ItemMeta meta, Material m) {
+	public Augment addAttributes(ItemMeta meta, Material m) {
 		ArrayList<Augment> augs = plugin.getValidAugments(Gear.getGearType(m));
 		if (augs.isEmpty())
 			return null;

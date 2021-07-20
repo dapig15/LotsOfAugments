@@ -10,7 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.block.Structure;
+import org.bukkit.block.BlastFurnace;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,6 +34,7 @@ import data.InventoryPair;
 import data.NSKeys;
 import data.NSKeys.NSKVals;
 import main.MagicMonsters;
+import utility.Augment;
 import utility.AugmentApplier;
 import utility.Utility;
 
@@ -50,7 +51,7 @@ public class AugmentStation implements Listener {
 	}
 	
 	public static ItemStack createAttributeForge() {
-		ItemStack bukkitItem = new ItemStack(Material.STRUCTURE_BLOCK);
+		ItemStack bukkitItem = new ItemStack(Material.BLAST_FURNACE);
 		ItemMeta bukkitItemMeta = bukkitItem.getItemMeta();
 		bukkitItemMeta.setDisplayName("§a§lAttribute Forge");
 		bukkitItemMeta.setLore(Arrays.asList("§aTweak your gear!"));
@@ -61,8 +62,8 @@ public class AugmentStation implements Listener {
 	}
 	
 	public static boolean isAttributeForge(Block b) {
-		if (b.getBlockData().getMaterial() == Material.STRUCTURE_BLOCK) {
-			Structure s = (Structure) b.getState();
+		if (b.getBlockData().getMaterial() == Material.BLAST_FURNACE) {
+			BlastFurnace s = (BlastFurnace) b.getState();
 			return (s.getPersistentDataContainer().has(
 					NSKeys.getNSKey(NSKVals.ATTRIBUTE_FORGE), PersistentDataType.INTEGER));
 		}
@@ -73,7 +74,7 @@ public class AugmentStation implements Listener {
 	public void onReforgeAnvilPlace(BlockPlaceEvent event) {
 		if (NSKeys.hasNSKey(event.getItemInHand(), NSKVals.ATTRIBUTE_FORGE)) {
 			event.getPlayer().sendMessage("woooo");
-			Structure s = (Structure) event.getBlockPlaced().getState();
+			BlastFurnace s = (BlastFurnace) event.getBlockPlaced().getState();
 			s.getPersistentDataContainer().set(NSKeys.getNSKey(NSKVals.ATTRIBUTE_FORGE),
 					PersistentDataType.INTEGER, 1);
 			s.update();
@@ -98,7 +99,7 @@ public class AugmentStation implements Listener {
 			if (isAttributeForge(clickedBlock)) {
 				event.setCancelled(true);
 				Inventory inv = Bukkit.createInventory(
-						player, 27, "§4Attribute Forge");
+						player, 27, "§4Augmentation Station");
 				for (int i = 0; i < 27; i++) {
 					if (i == 10) {
 						ItemStack instructions = new ItemStack(Material.PAPER);
@@ -193,12 +194,13 @@ public class AugmentStation implements Listener {
 										}
 									}
 								}
-								String attrName = applier.addAttributes(meta, gear.getType());
-								if (attrName == null) {
+								Augment aug = applier.addAttributes(meta, gear.getType());
+								if (aug == null) {
 									event.setCancelled(true);
 									player.sendMessage("§c§lThere are no valid attributes for this gear!");
 									return;
 								}
+								String attrName = aug.getName();
 								if (meta.hasLore()) {
 									List<String> lore = meta.getLore();
 									boolean flag = false;
@@ -206,13 +208,24 @@ public class AugmentStation implements Listener {
 										if (lore.get(i).contains("§fTrait: ")) {
 											flag = true;
 											lore.set(i, "§fTrait: "+attrName);
+											if (i+1 < lore.size()) {
+												lore.set(i+1, aug.getDesc());
+											} else {
+												lore.add(aug.getDesc());
+											}
+											break;
 										}
 									}
-									if (!flag)
-										lore.add("§fAttribute: "+attrName);
+									if (!flag) {
+										lore.add("§fTrait: "+attrName);
+										lore.add(aug.getDesc());
+									}
 									meta.setLore(lore);
 								} else {
-									meta.setLore(Arrays.asList(new String[] {"§fTrait: "+attrName}));
+									meta.setLore(Arrays.asList(new String[] {
+											"§fTrait: "+attrName,
+											aug.getDesc()
+									}));
 								}
 								gear.setItemMeta(meta);
 								

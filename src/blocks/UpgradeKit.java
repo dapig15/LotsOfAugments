@@ -49,7 +49,7 @@ public class UpgradeKit {
 		if (tier >= 6 || tier < 0)
 			tier = 0;
 		if (gearType >= 9 || gearType < 0)
-			gearType = 0;
+			gearType = -1;
 		ItemStack item = new ItemStack(Material.NETHER_BRICK);
 		ItemMeta im = item.getItemMeta();
 		switch (gearType) {
@@ -120,9 +120,17 @@ public class UpgradeKit {
 					"§fTier: "+coloredToolTiers[tier]
 			}));
 			break;
+		default:
+			item.setType(Material.BRICK);
+			im.setDisplayName("§fBlank Upgrade Kit");
+			im.setLore(Arrays.asList(new String[] {
+					"§fPut four of these around extra gear in a workbench!",
+			}));
+			break;
 		}
 		im.getPersistentDataContainer().set(
-				NSKeys.getNSKey(NSKVals.UPGRADE_KIT), PersistentDataType.INTEGER, gearType*10+tier);
+				NSKeys.getNSKey(NSKVals.UPGRADE_KIT), PersistentDataType.INTEGER, 
+				(gearType != -1 ? gearType*10+tier : -1));
 		item.setItemMeta(im);
 		return item;
 	}

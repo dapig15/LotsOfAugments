@@ -5,10 +5,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice.ExactChoice;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,6 +24,7 @@ import com.google.common.collect.ImmutableMultimap.Builder;
 import blocks.*;
 import commands.*;
 import data.*;
+import data.Gear.GearStats;
 import utility.Augment;
 import utility.AugmentApplier;
 import utility.ModifierPair;
@@ -58,7 +65,7 @@ public class MagicMonsters extends JavaPlugin {
 			Operation.ADD_SCALAR,
 			Operation.MULTIPLY_SCALAR_1
 	};
-	private final String[] fieldStrings = new String[] {
+	public final String[] fieldStrings = new String[] {
 			"can-apply-to-armor",
 			"can-apply-to-elytras",
 			"can-apply-to-swords",
@@ -71,6 +78,9 @@ public class MagicMonsters extends JavaPlugin {
 	};
 	
 	private ArrayList<Augment> validAugments;
+	public ArrayList<Augment> getValidAugments() {
+		return validAugments;
+	}
 	public ArrayList<Augment> getValidAugments(int slot) {
 		ArrayList<Augment> res = new ArrayList<>();
 		for (Augment a : validAugments) {
@@ -87,10 +97,45 @@ public class MagicMonsters extends JavaPlugin {
     	this.getCommand("warmode").setExecutor(new Warmode());
     	this.getCommand("magictest").setExecutor(new MagicTest());
     	this.getCommand("senbonstorm").setExecutor(new Senbonstorm());
+    	this.getCommand("augmentlist").setExecutor(new AugmentList(this));
     	
     	PluginManager pm = getServer().getPluginManager();
     	AugmentApplier applier = new AugmentApplier(this);
     	pm.registerEvents(new AugmentStation(this, applier), pm.getPlugin("MagicMonsters")); // get name from yml
+    	pm.registerEvents(new AugmentList(this), pm.getPlugin("MagicMonsters"));
+    	
+    	// make blank upgrade kit recipe
+    	NamespacedKey blankKitKey = new NamespacedKey(this, "blank_kit_recipe");
+    	ShapedRecipe blankKitRecipe = new ShapedRecipe(blankKitKey, UpgradeKit.createUpgradeKit(-1, 0));
+    	blankKitRecipe.shape(" I ", "IBI", " I ");
+    	blankKitRecipe.setIngredient('I', Material.IRON_NUGGET);
+    	blankKitRecipe.setIngredient('B', Material.BRICK);
+    	Bukkit.addRecipe(blankKitRecipe);
+    	
+    	// make all the indiv kits' recipes
+    	for (GearStats val : Gear.GearStats.values()) {
+			String name = val.name();
+	    	NamespacedKey upgradeKitKey = new NamespacedKey(this, "upgrade_kit_"+name+"_recipe");
+	    	ItemStack newKit = UpgradeKit.createUpgradeKit(Gear.getGearType(Material.valueOf(name)),
+					Gear.getTier(Material.valueOf(name)));
+	    	newKit.setAmount(4);
+	    	ShapedRecipe upgradeKitRecipe = new ShapedRecipe(upgradeKitKey, newKit);
+	    	upgradeKitRecipe.shape(" B ", "BGB", " B ");
+	    	upgradeKitRecipe.setIngredient('G', Material.valueOf(name));
+	    	ExactChoice ec = new ExactChoice(UpgradeKit.createUpgradeKit(-1, 0));
+	    	upgradeKitRecipe.setIngredient('B', ec);
+	    	Bukkit.addRecipe(upgradeKitRecipe);
+		}
+    	
+    	// make augment station recipe
+    	NamespacedKey augStationKey = new NamespacedKey(this, "augment_station_recipe");
+    	ShapedRecipe augStationRecipe = new ShapedRecipe(augStationKey, AugmentStation.createAttributeForge());
+    	augStationRecipe.shape("III", "SBS", "SSS");
+    	augStationRecipe.setIngredient('I', Material.IRON_INGOT);
+    	ExactChoice ec = new ExactChoice(UpgradeKit.createUpgradeKit(-1, 0));
+    	augStationRecipe.setIngredient('B', ec);
+    	augStationRecipe.setIngredient('S', Material.STONE);
+    	Bukkit.addRecipe(augStationRecipe);
     	
     	inventoryMap = new HashMap<>();
     	
@@ -123,6 +168,10 @@ public class MagicMonsters extends JavaPlugin {
 				continue outer;
 			}
 			final String name = config.getString(augmentId+".display-name");
+			String desc = "§7(no desc provided)";
+			if (config.contains(augmentId+".description") && config.isString(augmentId+".description")) {
+				desc = config.getString(augmentId+".description");
+			}
 			final boolean[] canApply = new boolean[9];
 			for (int j = 0; j < canApply.length; j++) {
 				if (!config.contains(augmentId+"."+fieldStrings[j]) || !config.isBoolean(augmentId+"."+fieldStrings[j])) {
@@ -138,7 +187,7 @@ public class MagicMonsters extends JavaPlugin {
 			} else {
 				weight = config.getInt(augmentId+".weight");
 			}
-			validAugments.add(new Augment(map, name, canApply, weight, i));
+			validAugments.add(new Augment(map, name, desc, canApply, weight, i));
 		}
     	this.getLogger().info("we got "+validAugments.size()+" augs");
     	for (int i = 0; i < validAugments.size(); i++) {

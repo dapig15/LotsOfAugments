@@ -21,3 +21,5 @@ commands:
         description: In 6 seconds, fire 8-16 fire charges at cursor at a rate of 2 charges/sec Cooldown of 10mins
     magictest:
         description: Dont use this
+    augmentlist:
+        description: List all loaded augments

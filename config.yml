@@ -1,22 +1,66 @@
 #all augments are formatted in a specific way:
 #<name (id) of augment>: ("phenomenal", etc.; DO NOT MAKE TWO THAT HAVE THE SAME NAME!)
 #  display-name: <name> (supports minecraft color codes; two can have the same display name but NOT THE SAME ID)
+#  description: <desc> (supports minecraft color codes as well)
 #  weight: 1 (higher weight = higher chance to get that trait; defaults to 1)
-#  armor/armor-toughness/attack-damage/attack-speed/knockback-resistance/luck-max-health/movement-speed: (you can add whatever of these attributes you want, but dont add the same attr twice; all zero/non-number values are ignored)
+#  armor/armor-toughness/attack-damage/attack-speed/knockback-resistance/luck/max-health/movement-speed: (you can add whatever of these attributes you want, but dont add the same attr twice; all zero/non-number values are ignored)
 #    add: 0 (boosts stat by val; additive)
 #    mult-add: 0 (boosts stat by 1+val; multiplicative, stacks additively with other mult-add)
 #    mult-mult: 0 (boosts stat by 1+val; multiplicative, stacks multiplicatively with other mult-mult)
 #  can-apply-to-armor/elytras/swords/axes/tridents/bows/crossbows/shields/tools: true/false (if it cant be applied, that gear wont get that trait)
 # below are some examples!
 augment-list: #anything not in this list wont be included!
+  - soft
+  - sound
+  - secure
+  - concrete
+  - resistant
+  - unyielding
+  - brittle
+  - dense
+  - compact
+  - hardened
+  - tenacious
+  - impenetrable
+  - dull
+  - pointy
+  - sharp
+  - acute
+  - jagged
+  - serrated
+  - unwieldy
+  - light
+  - airy
+  - lithe
+  - graceful
+  - weightless
   - weak
   - stubborn
   - stout
   - stable
   - steadfast
   - stoic
+  - downtrodden
+  - happy
+  - lucky
+  - charmed
+  - blessed
+  - auspicious
+  - lifeless
+  - healthy
+  - hearty
+  - medicinal
+  - absorptive
+  - invigorating
+  - heavy
+  - brisk
+  - speedy
+  - nimble
+  - winged
+  - supersonic
 example:
   display-name: §d§lEXAMPLE
+  description: §fExample description
   weight: 1
   armor:
     add: 0
@@ -59,8 +103,231 @@ example:
   can-apply-to-crossbows: true
   can-apply-to-shields: true
   can-apply-to-tools: true
+soft:
+  display-name: §7§lSOFT
+  description: §7(-10% armor)
+  weight: 15
+  armor:
+    mult-add: -0.1
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true
+sound:
+  display-name: §f§lSOUND
+  description: §7(+4% armor)
+  weight: 35
+  armor:
+    mult-add: 0.04
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true
+secure:
+  display-name: §a§lSECURE
+  description: §7(+12% armor)
+  weight: 25
+  armor:
+    mult-add: 0.12
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true
+concrete:
+  display-name: §9§lCONCRETE
+  description: §7(+24% armor)
+  weight: 15
+  armor:
+    mult-add: 0.24
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true
+resistant:
+  display-name: §5§lRESISTANT
+  description: §7(+40% armor)
+  weight: 8
+  armor:
+    mult-add: 0.4
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true
+unyielding:
+  display-name: §6§lUNYIELDING
+  description: §7(+60% armor)
+  weight: 2
+  armor:
+    mult-add: 0.6
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true
+brittle:
+  display-name: §7§lBRITTLE
+  description: §7(-10% armor toughness)
+  weight: 15
+  armor-toughness:
+    mult-add: -0.1
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true
+dense:
+  display-name: §f§lDENSE
+  description: §7(+1 armor toughness)
+  weight: 35
+  armor-toughness:
+    add: 1
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true
+compact:
+  display-name: §a§lCOMPACT
+  description: §7(+2 armor toughness)
+  weight: 25
+  armor-toughness:
+    add: 2
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true
+hardened:
+  display-name: §9§lHARDENED
+  description: §7(+3 armor toughness)
+  weight: 15
+  armor-toughness:
+    add: 3
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true
+tenacious:
+  display-name: §5§lTENACIOUS
+  description: §7(+4 armor toughness)
+  weight: 8
+  armor-toughness:
+    add: 4
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true
+impenetrable:
+  display-name: §6§lIMPENETRABLE
+  description: §7(+5 armor toughness)
+  weight: 2
+  armor-toughness:
+    add: 5
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-shields: true
+dull:
+  display-name: §7§lDULL
+  description: §7(-10% attack damage)
+  weight: 15
+  attack-damage:
+    mult-add: -0.1
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+pointy:
+  display-name: §f§lPOINTY
+  description: §7(+4% attack damage)
+  weight: 35
+  attack-damage:
+   mult-add: 0.04
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+sharp:
+  display-name: §a§lSHARP
+  description: §7(+12% attack damage)
+  weight: 25
+  attack-damage:
+    mult-add: 0.12
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+acute:
+  display-name: §9§lACUTE
+  description: §7(+24% attack damage)
+  weight: 15
+  attack-damage:
+    mult-add: 0.24
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+jagged:
+  display-name: §5§lJAGGED
+  description: §7(+40% attack damage)
+  weight: 8
+  attack-damage:
+    mult-add: 0.4
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+serrated:
+  display-name: §6§lSERRATED
+  description: §7(+60% attack damage)
+  weight: 2
+  attack-damage:
+    mult-add: 0.6
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+unwieldy:
+  display-name: §7§lUNWIELDY
+  description: §7(-10% attack speed)
+  weight: 15
+  attack-speed:
+    mult-add: -0.1
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-tools: true
+light:
+  display-name: §f§lLIGHT
+  description: §7(+4% attack speed)
+  weight: 35
+  attack-speed:
+   mult-add: 0.04
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-tools: true
+airy:
+  display-name: §a§lAIRY
+  description: §7(+12% attack speed)
+  weight: 25
+  attack-speed:
+    mult-add: 0.12
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-tools: true
+lithe:
+  display-name: §9§lLITHE
+  description: §7(+24% attack speed)
+  weight: 15
+  attack-speed:
+    mult-add: 0.24
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-tools: true
+graceful:
+  display-name: §5§lGRACEFUL
+  description: §7(+40% attack speed)
+  weight: 8
+  attack-speed:
+    mult-add: 0.4
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-tools: true
+weightless:
+  display-name: §6§lWEIGHTLESS
+  description: §7(+60% attack speed)
+  weight: 2
+  attack-speed:
+    mult-add: 0.6
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-tools: true
 weak:
   display-name: §7§lWEAK
+  description: §7(-10% knockback resistance)
   weight: 15
   knockback-resistance:
     mult-add: -0.1
@@ -69,41 +336,316 @@ weak:
   can-apply-to-shields: true
 stubborn:
   display-name: §f§lSTUBBORN
+  description: §7(+1 knockback resistance)
   weight: 35
   knockback-resistance:
-    add: 1
+    add: 0.1
   can-apply-to-armor: true
   can-apply-to-elytras: true
   can-apply-to-shields: true
 stout:
-  display-name: §7§lSTOUT
+  display-name: §a§lSTOUT
+  description: §7(+2 knockback resistance)
   weight: 25
   knockback-resistance:
-    add: 2
+    add: 0.2
   can-apply-to-armor: true
   can-apply-to-elytras: true
   can-apply-to-shields: true
 stable:
   display-name: §9§lSTABLE
+  description: §7(+3 knockback resistance)
   weight: 15
   knockback-resistance:
-    add: 3
+    add: 0.3
   can-apply-to-armor: true
   can-apply-to-elytras: true
   can-apply-to-shields: true
 steadfast:
   display-name: §5§lSTEADFAST
+  description: §7(+4 knockback resistance)
   weight: 8
   knockback-resistance:
-    add: 4
+    add: 0.4
   can-apply-to-armor: true
   can-apply-to-elytras: true
   can-apply-to-shields: true
 stoic:
   display-name: §6§lSTOIC
+  description: §7(+5 knockback resistance)
   weight: 2
   knockback-resistance:
-    add: 5
+    add: 0.5
   can-apply-to-armor: true
   can-apply-to-elytras: true
   can-apply-to-shields: true
+downtrodden:
+  display-name: §7§lDOWNTRODDEN
+  description: §7(-10% luck)
+  weight: 15
+  luck:
+    mult-add: -0.1
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+happy:
+  display-name: §f§lHAPPY
+  description: §7(+1 luck)
+  weight: 35
+  luck:
+    add: 1
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+lucky:
+  display-name: §a§lLUCKY
+  description: §7(+2 luck)
+  weight: 25
+  luck:
+    add: 2
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+charmed:
+  display-name: §9§lCHARMED
+  description: §7(+3 luck)
+  weight: 15
+  luck:
+    add: 3
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+blessed:
+  display-name: §5§lBLESSED
+  description: §7(+4 luck)
+  weight: 8
+  luck:
+    add: 4
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+auspicious:
+  display-name: §6§lAUSPICIOUS
+  description: §7(+5 luck)
+  weight: 2
+  luck:
+    add: 5
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+lifeless:
+  display-name: §7§lLIFELESS
+  description: §7(-1 heart)
+  weight: 15
+  max-health:
+    add: -2
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+healthy:
+  display-name: §f§lHEALTHY
+  description: §7(+1 heart)
+  weight: 35
+  max-health:
+    add: 2
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+hearty:
+  display-name: §a§lHEARTY
+  description: §7(+2 hearts)
+  weight: 25
+  max-health:
+    add: 4
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+medicinal:
+  display-name: §9§lMEDICINAL
+  description: §7(+3 hearts)
+  weight: 15
+  max-health:
+    add: 6
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+absorptive:
+  display-name: §5§lABSORPTIVE
+  description: §7(+4 hearts)
+  weight: 8
+  max-health:
+    add: 8
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+invigorating:
+  display-name: §6§lINVIGORATING
+  description: §7(+5 hearts)
+  weight: 2
+  max-health:
+    add: 10
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+heavy:
+  display-name: §7§lHEAVY
+  description: §7(-5% movement speed)
+  weight: 15
+  movement-speed:
+    mult-add: -0.1
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+brisk:
+  display-name: §f§lBRISK
+  description: §7(+2% movement speed)
+  weight: 35
+  movement-speed:
+    mult-add: 0.02
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+speedy:
+  display-name: §a§lSPEEDY
+  description: §7(+6% movement speed)
+  weight: 25
+  movement-speed:
+    mult-add: 0.06
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+nimble:
+  display-name: §9§lNIMBLE
+  description: §7(+12% movement speed)
+  weight: 15
+  movement-speed:
+    mult-add: 0.12
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+winged:
+  display-name: §5§lWINGED
+  description: §7(+20% movement speed)
+  weight: 8
+  movement-speed:
+    mult-add: 0.2
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
+supersonic:
+  display-name: §6§lSUPERSONIC
+  description: §7(+30% movement speed)
+  weight: 2
+  movement-speed:
+    mult-add: 0.3
+  can-apply-to-armor: true
+  can-apply-to-elytras: true
+  can-apply-to-swords: true
+  can-apply-to-axes: true
+  can-apply-to-tridents: true
+  can-apply-to-bows: true
+  can-apply-to-crossbows: true
+  can-apply-to-shields: true
+  can-apply-to-tools: true
