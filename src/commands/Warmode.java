@@ -34,8 +34,6 @@ public class Warmode implements CommandExecutor {
     		inv.setItem(8, createItem(Material.COOKED_BEEF, 64, "§c§lWar Steak", "§4actually its just steak"));
     		return true;
 		}
-		// REPLACE THIS
-		System.out.println("oops");
 		return false;
 	}
 	

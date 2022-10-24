@@ -165,7 +165,7 @@ public class AugmentList implements CommandExecutor, Listener {
 						lore.set(lore.size()-1, "§fClick gear §bin your hotbar §fwhile holding this!");
 						if (player.getGameMode() == GameMode.CREATIVE) {
 							player.sendMessage("§cThese papers don't work properly in creative!");
-							player.sendMessage("§cIt's unsolvable, please switch to survival before applying.");
+							player.sendMessage("§cPlease switch to survival before applying.");
 						}
 						meta.setLore(lore);
 						stack.setItemMeta(meta);

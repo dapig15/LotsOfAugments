@@ -43,7 +43,7 @@ public class NSKeys {
 					Bukkit.getServer().getPluginManager().getPlugin("MagicMonsters"),
 					"augment_paper_id");
 		default:
-			System.out.println("uh oh");
+			System.out.println("something in NSKeys is very broken");
 			return new NamespacedKey(
 					Bukkit.getServer().getPluginManager().getPlugin("MagicMonsters"),
 					"fail");
@@ -56,7 +56,7 @@ public class NSKeys {
 		case AUGMENT_ID: case AUGMENT_PAPER_ID:
 			return PersistentDataType.STRING;
 		default:
-			System.out.println("uh oh");
+			System.out.println("something in NSKeys is very broken");
 			return PersistentDataType.INTEGER;
 		}
 	}

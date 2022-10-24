@@ -99,8 +99,6 @@ public class MagicMonsters extends JavaPlugin {
     public void onEnable() {
     	
     	this.getCommand("warmode").setExecutor(new Warmode());
-    	this.getCommand("magictest").setExecutor(new MagicTest());
-    	this.getCommand("senbonstorm").setExecutor(new Senbonstorm());
     	AugmentList augList = new AugmentList(this);
     	this.getCommand("augmentlist").setExecutor(augList);
     	

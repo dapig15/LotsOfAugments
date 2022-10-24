@@ -204,12 +204,12 @@ public class AugmentStation implements Listener {
 								event.getInventory().setItem(16, forgeGlass);
 							}
 						} else {
-							player.sendMessage("how");
+							player.sendMessage("something in AugmentStation is very broken");
 							event.setCancelled(true);
 						}
 						break;
 					default:
-						player.sendMessage("wha huh");
+						player.sendMessage("something in AugmentStation is very broken");
 						event.setCancelled(true);
 					}
 				}
@@ -236,11 +236,9 @@ public class AugmentStation implements Listener {
 					player.sendMessage("§cGear or upgrade kits only!");
 					event.setCancelled(true);
 				}
-			} else {
-				System.out.println("not this one");
 			}
 		} else {
-			System.out.println("but how");
+			System.out.println("something in AugmentStation is very broken");
 		}
 	}
 
@@ -261,8 +259,6 @@ public class AugmentStation implements Listener {
 				
 				hm.remove(player);
 			}
-		} else {
-			System.out.println("but how");
 		}
 	}
 	

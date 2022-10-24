@@ -5,21 +5,5 @@ api-version: 1.17
 commands:
     warmode:
         description: Clears inventory and gives a diamond kit.
-    endless-star:
-        description: Clears inventory and gives a leather set with Blast Protection IV and Mending I with an iron pickaxe with Loot I and Efficiency I
-    amaterasu:
-        description: Gives a bow with Fire Aspect IV and Infinity I and 1 Arrow imbued with Weakness
-    tsukuyomi:
-        description: Grants Speed II and Strength III to user for 1 minute and adds a diamond sword with Mending I to hand. Enemies within 10m are inflicted with Weakness and Slowness
-    voidgodmode:
-        description: Clears inventory and gives a netherite kit with Resistance X and Fire Resistance
-    planetarydevastation: 
-        description: In 5 seconds, all characters within 15m except you are bunched at your cursor. Explode 3 TNTs. Gravity bind released when detonation finishes. Cooldown of 30min
-    senbonstorm:
-        description: In 2 seconds, shoot 9-21 arrows at 3 arrows/sec at cursor. Arrows are not retrievable. Cooldown of 5mins
-    meteorstorm:
-        description: In 6 seconds, fire 8-16 fire charges at cursor at a rate of 2 charges/sec Cooldown of 10mins
-    magictest:
-        description: Dont use this
     augmentlist:
         description: List all loaded augments
