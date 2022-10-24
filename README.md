@@ -1,2 +1,2 @@
-# MagicMonsters
-A plugin with cool stuff!
+# LotsOfAugments
+A personal plugin that adds Terraria-esque augments to tools, weapons, and armor.
